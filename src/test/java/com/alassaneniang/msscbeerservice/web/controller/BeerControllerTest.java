@@ -24,8 +24,7 @@ import static org.mockito.BDDMockito.given;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.*;
-import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
-import static org.springframework.restdocs.request.RequestDocumentation.pathParameters;
+import static org.springframework.restdocs.request.RequestDocumentation.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 /* change static import from springframework.test.web.servlet.request.MockMvcRequestBuilders.*
@@ -54,12 +53,18 @@ class BeerControllerTest {
         mockMvc
                 .perform(
                         get( "/api/v1/beer/{beerId}", UUID.randomUUID() )
+                                .param( "isCold", "yes" )
                                 .accept( APPLICATION_JSON )
                 )
                 .andExpect( status().isOk() )
-                .andDo( document( "v1/beer", pathParameters( // documenting path parameters
-                        parameterWithName( "beerId" ).description( "UUID of desired beer to get" )
-                ) ) );
+                .andDo( document( "v1/beer",
+                        pathParameters( // documenting path parameters
+                                parameterWithName( "beerId" ).description( "UUID of desired beer to get" )
+                        ),
+                        requestParameters(
+                                parameterWithName( "isCold" ).description( "Is beer cold query parameter" )
+                        )
+                ) );
     }
 
     @Test

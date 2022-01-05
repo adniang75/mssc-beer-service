@@ -28,7 +28,7 @@ class BeerControllerTest {
     void getBeerById () throws Exception {
         mockMvc
                 .perform(
-                        get( "/api/v1/beer/" + UUID.randomUUID().toString() )
+                        get( "/api/v1/beer/" + UUID.randomUUID() )
                                 .accept( APPLICATION_JSON )
                 )
                 .andExpect( status().isOk() );
@@ -53,7 +53,7 @@ class BeerControllerTest {
         String beerDTOJSON = objectMapper.writeValueAsString( beerDTO );
         mockMvc
                 .perform(
-                        put( "/api/v1/beer/" + UUID.randomUUID().toString() )
+                        put( "/api/v1/beer/" + UUID.randomUUID() )
                                 .contentType( APPLICATION_JSON )
                                 .content( beerDTOJSON )
                 )

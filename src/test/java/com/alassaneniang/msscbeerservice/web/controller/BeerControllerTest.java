@@ -1,11 +1,17 @@
 package com.alassaneniang.msscbeerservice.web.controller;
 
+import com.alassaneniang.msscbeerservice.repositories.BeerRepository;
 import com.alassaneniang.msscbeerservice.web.model.BeerDTO;
 import com.alassaneniang.msscbeerservice.web.model.BeerStyleEnum;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDocs;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.context.annotation.ComponentScan;
+import org.springframework.restdocs.RestDocumentationExtension;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.math.BigDecimal;
@@ -15,7 +21,10 @@ import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+@ExtendWith( RestDocumentationExtension.class )
+@AutoConfigureRestDocs
 @WebMvcTest( BeerController.class )
+@ComponentScan( basePackages = "com.alassaneniang.msscbeerservice.web.mappers" )
 class BeerControllerTest {
 
     @Autowired
@@ -23,6 +32,9 @@ class BeerControllerTest {
 
     @Autowired
     ObjectMapper objectMapper;
+
+    @MockBean
+    BeerRepository beerRepository;
 
     @Test
     void getBeerById () throws Exception {

@@ -1,4 +1,4 @@
-= Brewery Order Service Docs
+= Brewery Beer Service Docs
 Alassane NIANG;
 :doctype: book
 :icons: font
@@ -6,7 +6,7 @@ Alassane NIANG;
 
 Sample Application demonstrating how to use Spring REST Docs with JUnit 5.
 
-`BeerOrderControllerTest` makes call to very simple service and produces three documentation snippets.
+`BeerControllerTest` makes call to very simple service and produces three documentation snippets.
 
 One showing how to make a request using cURL:
 

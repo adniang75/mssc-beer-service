@@ -5,6 +5,7 @@ import com.alassaneniang.msscbeerservice.repositories.BeerRepository;
 import com.alassaneniang.msscbeerservice.web.model.BeerDTO;
 import com.alassaneniang.msscbeerservice.web.model.BeerStyleEnum;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,11 +13,15 @@ import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDoc
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.ComponentScan;
+import org.springframework.restdocs.RestDocumentationContextProvider;
 import org.springframework.restdocs.RestDocumentationExtension;
 import org.springframework.restdocs.constraints.ConstraintDescriptions;
 import org.springframework.restdocs.payload.FieldDescriptor;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.util.StringUtils;
+import org.springframework.web.context.WebApplicationContext;
 
 import java.math.BigDecimal;
 import java.util.Optional;
@@ -26,6 +31,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
+import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.documentationConfiguration;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.*;
 import static org.springframework.restdocs.payload.PayloadDocumentation.*;
 import static org.springframework.restdocs.request.RequestDocumentation.*;
@@ -35,7 +41,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 /* change static import from springframework.test.web.servlet.request.MockMvcRequestBuilders.*
  to org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.* */
 
-@ExtendWith( RestDocumentationExtension.class )
+@ExtendWith( { RestDocumentationExtension.class, SpringExtension.class } )
 @AutoConfigureRestDocs( uriScheme = "https", uriHost = "dev.alassaneniang", uriPort = 80 )
 @WebMvcTest( BeerController.class )
 @ComponentScan( basePackages = "com.alassaneniang.msscbeerservice.web.mappers" )
@@ -49,6 +55,16 @@ class BeerControllerTest {
 
     @MockBean
     BeerRepository beerRepository;
+
+    @Autowired
+    private WebApplicationContext context;
+
+    @BeforeEach
+    public void setUp ( RestDocumentationContextProvider restDocumentation ) {
+        this.mockMvc = MockMvcBuilders.webAppContextSetup( context )
+                .apply( documentationConfiguration( restDocumentation ) ).build();
+    }
+
 
     @Test
     void getBeerById () throws Exception {
@@ -64,7 +80,7 @@ class BeerControllerTest {
                 .andExpect( status().isOk() )
                 .andDo(
                         document(
-                                "v1/beer",
+                                "v1/beer-get-by-id",
                                 pathParameters( // documenting path parameters
                                         parameterWithName( "beerId" ).description( "UUID of desired beer to get" )
                                 ),
@@ -72,15 +88,15 @@ class BeerControllerTest {
                                         parameterWithName( "isCold" ).description( "Is beer cold query parameter" )
                                 ),
                                 responseFields(
-                                        fieldWithPath( "id" ).description( "Id of the beer" ),
-                                        fieldWithPath( "version" ).description( "Version number" ),
-                                        fieldWithPath( "createdDate" ).description( "Date created" ),
-                                        fieldWithPath( "lastModifiedDate" ).description( "Date updated" ),
-                                        fieldWithPath( "beerName" ).description( "Beer name" ),
-                                        fieldWithPath( "beerStyle" ).description( "Beer style" ),
-                                        fieldWithPath( "upc" ).description( "UPC of beer" ),
-                                        fieldWithPath( "price" ).description( "Beer price" ),
-                                        fieldWithPath( "quantityOnHand" ).description( "Quantity on hand" )
+                                        fieldWithPath( "id" ).description( "Id of the beer" ).type( "UUID" ),
+                                        fieldWithPath( "version" ).description( "Version number" ).type( "Long" ),
+                                        fieldWithPath( "createdDate" ).description( "Date created" ).type( "Timestamp" ),
+                                        fieldWithPath( "lastModifiedDate" ).description( "Date updated" ).type( "Timestamp" ),
+                                        fieldWithPath( "beerName" ).description( "Beer name" ).type( "String" ),
+                                        fieldWithPath( "beerStyle" ).description( "Beer style" ).type( "String" ),
+                                        fieldWithPath( "upc" ).description( "UPC of beer" ).type( "Long" ),
+                                        fieldWithPath( "price" ).description( "Beer price" ).type( "BigDecimal" ),
+                                        fieldWithPath( "quantityOnHand" ).description( "Quantity on hand" ).type( "Integer" )
                                 )
                         )
                 );
@@ -100,7 +116,7 @@ class BeerControllerTest {
                 .andExpect( status().isCreated() )
                 .andDo(
                         document(
-                                "v1/beer",
+                                "v1/beer-post-new",
                                 requestFields(
                                         fields.withPath( "id" ).ignored(),
                                         fields.withPath( "version" ).ignored(),

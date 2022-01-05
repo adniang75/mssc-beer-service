@@ -24,6 +24,8 @@ import static org.mockito.BDDMockito.given;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.*;
+import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
+import static org.springframework.restdocs.payload.PayloadDocumentation.responseFields;
 import static org.springframework.restdocs.request.RequestDocumentation.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -57,14 +59,28 @@ class BeerControllerTest {
                                 .accept( APPLICATION_JSON )
                 )
                 .andExpect( status().isOk() )
-                .andDo( document( "v1/beer",
-                        pathParameters( // documenting path parameters
-                                parameterWithName( "beerId" ).description( "UUID of desired beer to get" )
-                        ),
-                        requestParameters(
-                                parameterWithName( "isCold" ).description( "Is beer cold query parameter" )
+                .andDo(
+                        document(
+                                "v1/beer",
+                                pathParameters( // documenting path parameters
+                                        parameterWithName( "beerId" ).description( "UUID of desired beer to get" )
+                                ),
+                                requestParameters(
+                                        parameterWithName( "isCold" ).description( "Is beer cold query parameter" )
+                                ),
+                                responseFields(
+                                        fieldWithPath( "id" ).description( "Id of the beer" ),
+                                        fieldWithPath( "version" ).description( "Version number" ),
+                                        fieldWithPath( "createdDate" ).description( "Date created" ),
+                                        fieldWithPath( "lastModifiedDate" ).description( "Date updated" ),
+                                        fieldWithPath( "beerName" ).description( "Beer name" ),
+                                        fieldWithPath( "beerStyle" ).description( "Ber style" ),
+                                        fieldWithPath( "upc" ).description( "UPC of beer" ),
+                                        fieldWithPath( "price" ).description( "Beer price" ),
+                                        fieldWithPath( "quantityOnHand" ).description( "Quantity on hand" )
+                                )
                         )
-                ) );
+                );
     }
 
     @Test

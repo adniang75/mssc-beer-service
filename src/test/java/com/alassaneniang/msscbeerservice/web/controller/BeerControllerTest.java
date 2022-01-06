@@ -1,7 +1,6 @@
 package com.alassaneniang.msscbeerservice.web.controller;
 
-import com.alassaneniang.msscbeerservice.domain.Beer;
-import com.alassaneniang.msscbeerservice.repositories.BeerRepository;
+import com.alassaneniang.msscbeerservice.services.BeerService;
 import com.alassaneniang.msscbeerservice.web.model.BeerDTO;
 import com.alassaneniang.msscbeerservice.web.model.BeerStyleEnum;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -24,7 +23,6 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.context.WebApplicationContext;
 
 import java.math.BigDecimal;
-import java.util.Optional;
 import java.util.UUID;
 
 import static org.mockito.ArgumentMatchers.any;
@@ -34,7 +32,8 @@ import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.docu
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.documentationConfiguration;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.*;
 import static org.springframework.restdocs.payload.PayloadDocumentation.*;
-import static org.springframework.restdocs.request.RequestDocumentation.*;
+import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
+import static org.springframework.restdocs.request.RequestDocumentation.pathParameters;
 import static org.springframework.restdocs.snippet.Attributes.key;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -54,7 +53,7 @@ class BeerControllerTest {
     ObjectMapper objectMapper;
 
     @MockBean
-    BeerRepository beerRepository;
+    BeerService beerService;
 
     @Autowired
     private WebApplicationContext context;
@@ -68,13 +67,12 @@ class BeerControllerTest {
 
     @Test
     void getBeerById () throws Exception {
-        given( beerRepository.findById( any() ) )
-                .willReturn( Optional.of( Beer.builder().build() ) );
+        given( beerService.getBeerById( any() ) )
+                .willReturn( getValidBeerDTO() );
 
         mockMvc
                 .perform(
                         get( "/api/v1/beer/{beerId}", UUID.randomUUID() )
-                                .param( "isCold", "yes" )
                                 .accept( APPLICATION_JSON )
                 )
                 .andExpect( status().isOk() )
@@ -83,9 +81,6 @@ class BeerControllerTest {
                                 "v1/beer-get-by-id",
                                 pathParameters( // documenting path parameters
                                         parameterWithName( "beerId" ).description( "UUID of desired beer to get" )
-                                ),
-                                requestParameters(
-                                        parameterWithName( "isCold" ).description( "Is beer cold query parameter" )
                                 ),
                                 responseFields(
                                         fieldWithPath( "id" ).description( "Id of the beer" ).type( "UUID" ),
@@ -105,7 +100,7 @@ class BeerControllerTest {
     @Test
     void saveNewBeer () throws Exception {
         BeerDTO beerDTO = getValidBeerDTO();
-        String beerDTOJSON = objectMapper.writeValueAsString( beerDTO );
+        String beerDTOJSON = objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString( beerDTO );
         ConstrainedFields fields = new ConstrainedFields( BeerDTO.class );
         mockMvc
                 .perform(
@@ -135,14 +130,34 @@ class BeerControllerTest {
     @Test
     void updateBeerById () throws Exception {
         BeerDTO beerDTO = getValidBeerDTO();
-        String beerDTOJSON = objectMapper.writeValueAsString( beerDTO );
+        String beerDTOJSON = objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString( beerDTO );
+        ConstrainedFields fields = new ConstrainedFields( BeerDTO.class );
         mockMvc
                 .perform(
-                        put( "/api/v1/beer/" + UUID.randomUUID() )
+                        put( "/api/v1/beer/{beerId}", UUID.randomUUID() )
                                 .contentType( APPLICATION_JSON )
                                 .content( beerDTOJSON )
                 )
-                .andExpect( status().isNoContent() );
+                .andExpect( status().isNoContent() )
+                .andDo(
+                        document(
+                                "v1/beer-put-update",
+                                pathParameters(
+                                        parameterWithName( "beerId" ).description( "Id of the beer" )
+                                ),
+                                requestFields(
+                                        fields.withPath( "id" ).ignored(),
+                                        fields.withPath( "version" ).ignored(),
+                                        fields.withPath( "createdDate" ).ignored(),
+                                        fields.withPath( "lastModifiedDate" ).ignored(),
+                                        fields.withPath( "beerName" ).description( "Beer name" ),
+                                        fields.withPath( "beerStyle" ).description( "Beer style" ),
+                                        fields.withPath( "upc" ).description( "UPC of beer" ).attributes(),
+                                        fields.withPath( "price" ).description( "Beer price" ),
+                                        fields.withPath( "quantityOnHand" ).ignored()
+                                )
+                        )
+                );
 
     }
 

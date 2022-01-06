@@ -1,79 +1,107 @@
 = Brewery Beer Service Docs
-:toc:
 Alassane NIANG;
+:toc: left
 :doctype: book
 :icons: font
 :source-highlighter: highlight.js
 :sourcemap: true
 
-Sample Application demonstrating how to use Spring REST Docs with JUnit 5.
+`Brewery Beer Manager Service` is a Microservice for managing beer inventory.
 
-`BeerControllerTest` makes call to very simple service and produces three documentation snippets.
+The service allows the following operations:
 
-== Get by ID
+* Create a new beer
+* Update an existing beer
+* Delete an existing beer
+* Get a beer by its id
+* Get all beers
 
-One showing how to make a request using cURL
+== Get a Beer by its ID
+
+=== Using cURL
 
 include::{snippets}/v1/beer-get-by-id/curl-request.adoc[]
 
-One showing how to make a request using HTTP
-
-include::{snippets}/v1/beer-get-by-id/http-request.adoc[]
-
-One showing how to make a request using HTTPIE
+=== Using HTTPIE
 
 include::{snippets}/v1/beer-get-by-id/httpie-request.adoc[]
 
-Path Parameters
+=== Using HTTP
+
+include::{snippets}/v1/beer-get-by-id/http-request.adoc[]
+
+=== Path Parameters
 
 include::{snippets}/v1/beer-get-by-id/path-parameters.adoc[]
 
-Request Parameters
-
-include::{snippets}/v1/beer-get-by-id/request-parameters.adoc[]
-
-One showing the HTTP Response
-
-include::{snippets}/v1/beer-get-by-id/http-response.adoc[]
-
-Request Body
-
-include::{snippets}/v1/beer-get-by-id/request-body.adoc[]
-
-Response Fields
+=== Response Fields
 
 include::{snippets}/v1/beer-get-by-id/response-fields.adoc[]
 
-Response Body
+=== HTTP Response Example
+
+include::{snippets}/v1/beer-get-by-id/http-response.adoc[]
+
+=== Response Body Example
 
 include::{snippets}/v1/beer-get-by-id/response-body.adoc[]
 
 == Create new beer
 
-One showing how to make a request using cURL
+=== Using cURL
 
 include::{snippets}/v1/beer-post-new/curl-request.adoc[]
 
-One showing how to make a request using HTTPIE
+=== Using HTTPIE
 
 include::{snippets}/v1/beer-post-new/httpie-request.adoc[]
 
-One showing how to make a request using HTTP
+=== Using HTTP
 
 include::{snippets}/v1/beer-post-new/http-request.adoc[]
 
-Request Fields
+=== Request Fields
 
 include::{snippets}/v1/beer-post-new/request-fields.adoc[]
 
-Request Body
+=== Request Body
 
 include::{snippets}/v1/beer-post-new/request-body.adoc[]
 
-One showing the HTTP Response
+=== HTTP Response Example
 
 include::{snippets}/v1/beer-post-new/http-response.adoc[]
 
-Response Body
+== Update an existing Beer
 
-include::{snippets}/v1/beer-post-new/response-body.adoc[]
+=== Using cURL
+
+include::{snippets}/v1/beer-put-update/curl-request.adoc[]
+
+=== Using HTTPIE
+
+include::{snippets}/v1/beer-put-update/httpie-request.adoc[]
+
+=== Using HTTP
+
+include::{snippets}/v1/beer-put-update/http-request.adoc[]
+
+=== Request Fields
+
+include::{snippets}/v1/beer-put-update/request-fields.adoc[]
+
+=== Path Parameters
+
+include::{snippets}/v1/beer-put-update/path-parameters.adoc[]
+
+=== Request Body
+
+include::{snippets}/v1/beer-put-update/request-body.adoc[]
+
+=== HTTP Response Example
+
+include::{snippets}/v1/beer-put-update/http-response.adoc[]
+
+== Delete an existing Beer
+
+_to be implemented_

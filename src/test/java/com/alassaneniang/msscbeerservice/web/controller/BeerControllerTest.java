@@ -25,6 +25,7 @@ import org.springframework.web.context.WebApplicationContext;
 import java.math.BigDecimal;
 import java.util.UUID;
 
+import static com.alassaneniang.msscbeerservice.bootstrap.BeerLoader.BEER_1_UPC;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
@@ -89,7 +90,7 @@ class BeerControllerTest {
                                         fieldWithPath( "lastModifiedDate" ).description( "Date updated" ).type( "Timestamp" ),
                                         fieldWithPath( "beerName" ).description( "Beer name" ).type( "String" ),
                                         fieldWithPath( "beerStyle" ).description( "Beer style" ).type( "String" ),
-                                        fieldWithPath( "upc" ).description( "UPC of beer" ).type( "Long" ),
+                                        fieldWithPath( "upc" ).description( "UPC of beer" ).type( "String" ),
                                         fieldWithPath( "price" ).description( "Beer price" ).type( "BigDecimal" ),
                                         fieldWithPath( "quantityOnHand" ).description( "Quantity on hand" ).type( "Integer" )
                                 )
@@ -101,6 +102,7 @@ class BeerControllerTest {
     void saveNewBeer () throws Exception {
         BeerDTO beerDTO = getValidBeerDTO();
         String beerDTOJSON = objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString( beerDTO );
+        given( beerService.saveNewBeer( any() ) ).willReturn( getValidBeerDTO() );
         ConstrainedFields fields = new ConstrainedFields( BeerDTO.class );
         mockMvc
                 .perform(
@@ -131,6 +133,7 @@ class BeerControllerTest {
     void updateBeerById () throws Exception {
         BeerDTO beerDTO = getValidBeerDTO();
         String beerDTOJSON = objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString( beerDTO );
+        given( beerService.updateBeerById( any(), any() ) ).willReturn( getValidBeerDTO() );
         ConstrainedFields fields = new ConstrainedFields( BeerDTO.class );
         mockMvc
                 .perform(
@@ -166,7 +169,7 @@ class BeerControllerTest {
                 .beerName( "My Beer" )
                 .beerStyle( BeerStyleEnum.ALE )
                 .price( new BigDecimal( "2.99" ) )
-                .upc( 123123123123L )
+                .upc( BEER_1_UPC )
                 .build();
     }
 
